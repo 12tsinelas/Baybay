@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Baybay</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tagalog&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f7f7f7; }
+    h1 { text-align: center; }
+    textarea, .output { width: 100%; padding: 10px; font-size: 1.2em; margin-top: 10px; box-sizing: border-box; }
+    .controls { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px; }
+    .controls label { display: flex; flex-direction: column; font-size: 0.9em; }
+    .output { min-height: 100px; border: 1px solid #ccc; background: white; }
+  </style>
+</head>
+<body>
+  <h1>Baybay</h1>
+  <label for="inputText">Enter text:</label>
+  <textarea id="inputText" rows="4" placeholder="Type something..."></textarea>
+  <div class="controls">
+    <label>Font Size <input type="number" id="fontSize" value="28" min="10" max="100" /></label>
+    <label>Color <input type="color" id="fontColor" value="#000000" /></label>
+    <label>Letter Spacing <input type="number" id="letterSpacing" value="5" min="0" max="20" /></label>
+    <label>Font Family
+      <select id="fontFamily">
+        <option value="serif">Serif</option>
+        <option value="sans-serif">Sans-serif</option>
+        <option value="'Noto Sans Tagalog', serif">Noto Sans Tagalog</option>
+      </select>
+    </label>
+  </div>
+  <div class="output" id="outputText"></div>
+  <script>
+    const inputText = document.getElementById('inputText');
+    const outputText = document.getElementById('outputText');
+    const fontSize = document.getElementById('fontSize');
+    const fontColor = document.getElementById('fontColor');
+    const letterSpacing = document.getElementById('letterSpacing');
+    const fontFamily = document.getElementById('fontFamily');
+    const baybayinMap = {
+      'a': 'ᜀ','e': 'ᜁ','i': 'ᜁ','o': 'ᜂ','u': 'ᜂ',
+      'ka': 'ᜃ','ke': 'ᜃᜒ','ki': 'ᜃᜒ','ko': 'ᜃᜓ','ku': 'ᜃᜓ',
+      'ba': 'ᜊ','be': 'ᜊᜒ','bi': 'ᜊᜒ','bo': 'ᜊᜓ','bu': 'ᜊᜓ',
+      'da': 'ᜇ','de': 'ᜇᜒ','di': 'ᜇᜒ','do': 'ᜇᜓ','du': 'ᜇᜓ',
+      'ga': 'ᜄ','ge': 'ᜄᜒ','gi': 'ᜄᜒ','go': 'ᜄᜓ','gu': 'ᜄᜓ',
+      'ha': 'ᜑ','he': 'ᜑᜒ','hi': 'ᜑᜒ','ho': 'ᜑᜓ','hu': 'ᜑᜓ',
+      'la': 'ᜎ','le': 'ᜎᜒ','li': 'ᜎᜒ','lo': 'ᜎᜓ','lu': 'ᜎᜓ',
+      'ma': 'ᜋ','me': 'ᜋᜒ','mi': 'ᜋᜒ','mo': 'ᜋᜓ','mu': 'ᜋᜓ',
+      'na': 'ᜈ','ne': 'ᜈᜒ','ni': 'ᜈᜒ','no': 'ᜈᜓ','nu': 'ᜈᜓ',
+      'pa': 'ᜉ','pe': 'ᜉᜒ','pi': 'ᜉᜒ','po': 'ᜉᜓ','pu': 'ᜉᜓ',
+      'sa': 'ᜐ','se': 'ᜐᜒ','si': 'ᜐᜒ','so': 'ᜐᜓ','su': 'ᜐᜓ',
+      'ta': 'ᜆ','te': 'ᜆᜒ','ti': 'ᜆᜒ','to': 'ᜆᜓ','tu': 'ᜆᜓ',
+      'nga': 'ᜅ','nge': 'ᜅᜒ','ngi': 'ᜅᜒ','ngo': 'ᜅᜓ','ngu': 'ᜅᜓ',
+      'ya': 'ᜌ','ye': 'ᜌᜒ','yi': 'ᜌᜒ','yo': 'ᜌᜓ','yu': 'ᜌᜓ',
+      ' ': ' '
+    };
+    function transliterate(text) {
+      text = text.toLowerCase();
+      let result = ''; let i = 0;
+      while (i < text.length) {
+        let syllable3 = text.slice(i, i + 3);
+        let syllable2 = text.slice(i, i + 2);
+        let syllable1 = text[i];
+        if (baybayinMap[syllable3]) { result += baybayinMap[syllable3]; i += 3; }
+        else if (baybayinMap[syllable2]) { result += baybayinMap[syllable2]; i += 2; }
+        else if (baybayinMap[syllable1]) { result += baybayinMap[syllable1]; i += 1; }
+        else { result += syllable1; i++; }
+      }
+      return result;
+    }
+    function updateOutput() {
+      const translated = transliterate(inputText.value);
+      outputText.textContent = translated;
+      outputText.style.fontSize = fontSize.value + 'px';
+      outputText.style.color = fontColor.value;
+      outputText.style.letterSpacing = letterSpacing.value + 'px';
+      outputText.style.fontFamily = fontFamily.value || "'Noto Sans Tagalog', serif";
+    }
+    inputText.addEventListener('input', updateOutput);
+    fontSize.addEventListener('input', updateOutput);
+    fontColor.addEventListener('input', updateOutput);
+    letterSpacing.addEventListener('input', updateOutput);
+    fontFamily.addEventListener('input', updateOutput);
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(err => console.log('SW failed:', err));
+    }
+  </script>
+</body>
+</html>
